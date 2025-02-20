@@ -1,0 +1,476 @@
+﻿<Window x:Class="HeatLossCalc.Views.HeatLossCalcView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MultiSelectTreeViewDemo"
+        xmlns:viewmodels="clr-namespace:HeatLossCalc.ViewModels"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
+        d:DataContext="{d:DesignInstance Type=viewmodels:HeatLossCalcViewModel}"
+        mc:Ignorable="d"
+        Title="Расчет теплопотерь"
+        Height="600"
+        MinHeight="200"
+        Width="600"
+        MinWidth="200">
+
+    <Window.Resources>
+        <Style x:Key="ButtonStyle"
+               TargetType="{x:Type Button}">
+            <Setter Property="Button.BorderBrush">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,1"
+                                         EndPoint="1,0"
+                                         SpreadMethod="Pad"
+                                         Opacity="1">
+                        <GradientStop Color="#FF233C91"
+                                      Offset="0.6" />
+                        <GradientStop Color="#FFB455A0"
+                                      Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="White" />
+            <Setter Property="BorderThickness"
+                    Value="2" />
+        </Style>
+        <Style x:Key="TreeViewItemFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Fill"
+                         Color="#FF595959" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Stroke"
+                         Color="#FF262626" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke"
+                         Color="#FF1BBBFA" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Fill"
+                         Color="Transparent" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Stroke"
+                         Color="#FF262626" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Fill"
+                         Color="#FF595959" />
+        <PathGeometry x:Key="TreeArrow"
+                      Figures="M0,0 L0,6 L6,0 z" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Fill"
+                         Color="Transparent" />
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Stroke"
+                         Color="#FF989898" />
+        <Style x:Key="ExpandCollapseToggleStyle"
+               TargetType="{x:Type ToggleButton}">
+            <Setter Property="Focusable"
+                    Value="False" />
+            <Setter Property="Width"
+                    Value="16" />
+            <Setter Property="Height"
+                    Value="16" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border Background="Transparent"
+                                Height="16"
+                                Padding="5,5,5,5"
+                                Width="16">
+                            <Path x:Name="ExpandPath"
+                                  Data="{StaticResource TreeArrow}"
+                                  Fill="{StaticResource TreeViewItem.TreeArrow.Static.Fill}"
+                                  Stroke="{StaticResource TreeViewItem.TreeArrow.Static.Stroke}">
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="135"
+                                                     CenterY="3"
+                                                     CenterX="3" />
+                                </Path.RenderTransform>
+                            </Path>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked"
+                                     Value="True">
+                                <Setter Property="RenderTransform"
+                                        TargetName="ExpandPath">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="180"
+                                                         CenterY="3"
+                                                         CenterX="3" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Fill"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.Static.Checked.Fill}" />
+                                <Setter Property="Stroke"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.Static.Checked.Stroke}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Stroke"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.MouseOver.Stroke}" />
+                                <Setter Property="Fill"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.MouseOver.Fill}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver"
+                                               Value="True" />
+                                    <Condition Property="IsChecked"
+                                               Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Stroke"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.MouseOver.Checked.Stroke}" />
+                                <Setter Property="Fill"
+                                        TargetName="ExpandPath"
+                                        Value="{StaticResource TreeViewItem.TreeArrow.MouseOver.Checked.Fill}" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MultiSelectTreeViewItemStyle"
+               TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="Padding"
+                    Value="1,0,0,0" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="FocusVisualStyle"
+                    Value="{StaticResource TreeViewItemFocusVisual}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="19"
+                                                  Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ToggleButton x:Name="Expander"
+                                          ClickMode="Press"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Style="{StaticResource ExpandCollapseToggleStyle}" />
+                            <Border x:Name="Bd"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}"
+                                    Grid.Column="1"
+                                    Padding="{TemplateBinding Padding}"
+                                    SnapsToDevicePixels="true">
+                                <ContentPresenter x:Name="PART_Header"
+                                                  ContentSource="Header"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Border>
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Grid.ColumnSpan="2"
+                                            Grid.Column="1"
+                                            Grid.Row="1" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded"
+                                     Value="false">
+                                <Setter Property="Visibility"
+                                        TargetName="ItemsHost"
+                                        Value="Collapsed" />
+                            </Trigger>
+                            <Trigger Property="HasItems"
+                                     Value="false">
+                                <Setter Property="Visibility"
+                                        TargetName="Expander"
+                                        Value="Hidden" />
+                            </Trigger>
+                            <!--Trigger Property="IsSelected" Value="true"-->
+                            <Trigger Property="local:MultiSelectTreeView.IsItemSelected"
+                                     Value="true">
+                                <Setter Property="Background"
+                                        TargetName="Bd"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <!--Condition Property="IsSelected" Value="true"/-->
+                                    <Condition Property="local:MultiSelectTreeView.IsItemSelected"
+                                               Value="true" />
+                                    <Condition Property="IsSelectionActive"
+                                               Value="false" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background"
+                                        TargetName="Bd"
+                                        Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}" />
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled"
+                                     Value="false">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="VirtualizingPanel.IsVirtualizing"
+                         Value="true">
+                    <Setter Property="ItemsPanel">
+                        <Setter.Value>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto" />
+            <RowDefinition  Height="Auto" />
+            <RowDefinition  Height="*" />
+            <RowDefinition  Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1"
+              Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Content="Анализ"
+                    Grid.Column="0"
+                    Style="{StaticResource ButtonStyle}"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    Command="{Binding AnalyzeCommand}" />
+            <Button Content="Расчет"
+                    Grid.Column="1"
+                    Style="{StaticResource ButtonStyle}"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    Command="{Binding CalcCommand}" />
+            <Button Content="Экспорт"
+                    Grid.Column="2"
+                    Style="{StaticResource ButtonStyle}"
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ExportCommand}" />
+            <Button Content="Создать воздух"
+                    Grid.Column="4"
+                    Style="{StaticResource ButtonStyle}"
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    Command="{Binding CreateAirCommand}" />
+            <Button Content="Показать воздух"
+                    Margin="5"
+                    Grid.Column="5"
+                    Style="{StaticResource ButtonStyle}"
+                    HorizontalAlignment="Right"
+                    Click="Button_Click_Find2" />
+        </Grid>
+     
+        <xcad:DockingManager x:Name="DockingManage"
+                             Grid.Row="2"
+                             AllowMixedOrientation="True">
+            <xcad:LayoutRoot x:Name="_layoutRoot">
+                <xcad:LayoutPanel Orientation="Horizontal">
+                    <xcad:LayoutAnchorablePaneGroup Orientation="Vertical"
+                                                    DockWidth="200">
+                        <xcad:LayoutAnchorablePane DockWidth="200">
+                            <xcad:LayoutAnchorable ContentId="level"
+                                                   Title="Уровни"
+                                                   CanHide="False"
+                                                   CanClose="False"
+                                                   AutoHideHeight="240">
+                                <ListBox ItemsSource="{Binding Levels}"
+                                         x:Name="ListProjects"
+                                         Grid.Row="0">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <CheckBox.Content>
+                                                    <TextBlock Text="{Binding Level.Name}" />
+                                                </CheckBox.Content>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                        <xcad:LayoutAnchorablePane DockWidth="200">
+                            <xcad:LayoutAnchorable ContentId="setting"
+                                                   Title="Настройки"
+                                                   CanHide="False"
+                                                   CanClose="False"
+                                                   AutoHideHeight="240">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <xctk:PropertyGrid Grid.Row="0"
+                                                       Grid.Column="0"
+                                                       Grid.ColumnSpan="2"
+                                                       NameColumnWidth="110"
+                                                       ShowTitle="False"
+                                                       ShowSearchBox="False"
+                                                       ShowSortOptions="False"
+                                                       SelectedObject="{Binding HTSettings}">
+                                    </xctk:PropertyGrid>
+                                    <Button Grid.Column="0"
+                                            Grid.Row="1"
+                                            Margin="5"
+                                            Content="Загрузить"
+                                            Style="{StaticResource ButtonStyle}"
+                                            Command="{Binding RestoreSettingCommand}" />
+                                    <Button Grid.Column="1"
+                                            Grid.Row="1"
+                                            Margin="5"
+                                            Content="Сохранить"
+                                            Style="{StaticResource ButtonStyle}"
+                                            Command="{Binding SaveSettingCommand}" />
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                    </xcad:LayoutAnchorablePaneGroup>
+                    <xcad:LayoutDocumentPaneGroup>
+                        <xcad:LayoutDocumentPane x:Name="DocumentPane">
+                            <xcad:LayoutDocument ContentId="document1"
+                                                 Title="Пространства"
+                                                 CanClose="False">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <local:MultiSelectTreeView x:Name="Spaces"
+                                                               ItemContainerStyle="{StaticResource MultiSelectTreeViewItemStyle}"
+                                                               ItemsSource="{Binding SpaceAnalyses}"
+                                                               SelectedItemChanged="MultiSelectTreeView_SelectedItemChanged">
+                                        <local:MultiSelectTreeView.ItemTemplate>
+                                            <HierarchicalDataTemplate ItemsSource="{Binding Areas}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Space.Name}"
+                                                               FontSize="15" />
+                                                    <TextBlock Text="  |  "
+                                                               Margin="5,0,5,0" />
+                                                    <TextBlock Text="{Binding AreaSize}"
+                                                               FontSize="15" />
+                                                    <TextBlock Text="м2" />
+                                                    <TextBlock Text="  |  "
+                                                               Margin="5,0,5,0" />
+                                                    <TextBlock Text="{Binding Temp}"
+                                                               FontSize="15" />
+                                                    <TextBlock Text="°C" />
+                                                </StackPanel>
+                                                <HierarchicalDataTemplate.ItemTemplate>
+                                                    <HierarchicalDataTemplate ItemsSource="{Binding ElementsFict}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding DirectionRu}"
+                                                                       FontSize="14" />
+                                                            <TextBlock Text="|"
+                                                                       Margin="5,0,5,0" />
+                                                            <TextBlock Text="{Binding AreaCalc}" />
+                                                            <TextBlock Text="м2" />
+                                                            <TextBlock Text="|"
+                                                                       Margin="5,0,5,0" />
+                                                            <TextBlock Text="{Binding Temp}" />
+                                                            <TextBlock Text="°C" />
+                                                        </StackPanel>
+                                                        <HierarchicalDataTemplate.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="{Binding CategoryName}" />
+                                                                    <TextBlock Text="|"
+                                                                               Margin="5,0,5,0" />
+                                                                    <TextBlock Text="{Binding SymbolName}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </HierarchicalDataTemplate.ItemTemplate>
+                                                    </HierarchicalDataTemplate>
+                                                </HierarchicalDataTemplate.ItemTemplate>
+                                            </HierarchicalDataTemplate>
+                                        </local:MultiSelectTreeView.ItemTemplate>
+                                    </local:MultiSelectTreeView>
+
+                                </Grid>
+                            </xcad:LayoutDocument>
+                            <xcad:LayoutDocument ContentId="document2"
+                                                 Title="Элементы"
+                                                 CanClose="False">
+                                <Grid>
+                                    <DataGrid ItemsSource="{Binding FamilySymbolsFict}"
+                                              AutoGenerateColumns="False"
+                                              VirtualizingPanel.IsVirtualizing="True"
+                                              CanUserAddRows="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Типоразмер"
+                                                                Binding="{Binding SymbolName}"
+                                                                Width="2*" />
+                                            <DataGridTextColumn Header="Категория"
+                                                                Binding="{Binding CategoryName}"
+                                                                Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </xcad:LayoutDocument>
+                        </xcad:LayoutDocumentPane>
+                        <xcad:LayoutDocumentPane>
+                            <xcad:LayoutDocument ContentId="document3"
+                                                 Title="Вид"
+                                                 CanClose="False">
+                                <Grid>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition  Height="auto" />
+                                            <RowDefinition  Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Button Grid.Row="0"
+                                                HorizontalAlignment="Right"
+                                                Content="Обновить"
+                                                Style="{StaticResource ButtonStyle}"
+                                                Click="Button_Click_Find">
+                                        </Button>
+                                        <Grid x:Name="GridView"
+                                              Grid.Row="1" />
+                                    </Grid>
+                                </Grid>
+                            </xcad:LayoutDocument>
+                        </xcad:LayoutDocumentPane>
+                    </xcad:LayoutDocumentPaneGroup >
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
+    </Grid>
+</Window>

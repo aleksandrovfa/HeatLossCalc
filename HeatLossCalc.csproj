@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{48B29BB2-E7D9-4AA3-8692-0959230753E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeatLossCalc</RootNamespace>
+    <AssemblyName>HeatLossCalc</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Build-R19|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Build-R22|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HelixToolkit.Wpf, Version=0.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>O:\Etalon Project\KPO\СФП\fedor.aleksandrov\Библиотеки\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="NewtonSoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\NewtonSoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Revit.Async">
+      <HintPath>O:\Etalon Project\KPO\Revit\!_БИБЛИОТЕКА РЕСУРСОВ\07_ПЛАГИНЫ\ЭталонПроект\DLL\__Эталон Проект_2019\Revit.Async.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ricaun.Revit.UI.StatusBar">
+      <HintPath>O:\Etalon Project\KPO\СФП\fedor.aleksandrov\Библиотеки\ricaun.Revit.UI.StatusBar.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=4.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>O:\Etalon Project\KPO\СФП\fedor.aleksandrov\Библиотеки\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=4.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>O:\Etalon Project\KPO\СФП\fedor.aleksandrov\Библиотеки\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)' == 'Build-R19'">
+    <Reference Include="RevitAPI">
+      <HintPath>$(ProgramW6432)\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(ProgramW6432)\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)' == 'Build-R22'">
+    <Reference Include="RevitAPI">
+      <HintPath>$(ProgramW6432)\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(ProgramW6432)\Autodesk\Revit 2022\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HeatLossCalcCmd.cs" />
+    <Compile Include="Helix\Extensions\HelixViewport3DExtension.cs" />
+    <Compile Include="Helix\PreviewWindowRevitUtils.cs" />
+    <Compile Include="Helix\Utils\DocumentUtils.cs" />
+    <Compile Include="Helix\Utils\GraphicsStyleUtils.cs" />
+    <Compile Include="Helix\Utils\MaterialUtils.cs" />
+    <Compile Include="Models\Comparer\CompareElement.cs" />
+    <Compile Include="Models\Comparer\CompareElementFict.cs" />
+    <Compile Include="Models\Comparer\CompareLevel.cs" />
+    <Compile Include="Models\ExportToExcel.cs" />
+    <Compile Include="Helix\Extensions\ModelVisual3DUtils.cs" />
+    <Compile Include="Helix\Extensions\RevitColorExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitGeometryColorUtils.cs" />
+    <Compile Include="Helix\Extensions\RevitGeometryModel3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitLinesVisual3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitMeshBuilderExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitMeshGeometry3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitPoint3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitScreenSpaceVisual3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitVector3DExtension.cs" />
+    <Compile Include="Helix\Extensions\RevitVisual3DExtension.cs" />
+    <Compile Include="Models\Extensions\ElementExtensions.cs" />
+    <Compile Include="Models\HeatLossSettings.cs" />
+    <Compile Include="Models\Ray\ElementFict.cs" />
+    <Compile Include="Models\Ray\Ray.cs" />
+    <Compile Include="Models\Ray\RayArea.cs" />
+    <Compile Include="Models\SpaceAnalysis.cs" />
+    <Compile Include="Models\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Models\Enum\UtilsDirection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\RevitApi.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\Logger.cs" />
+    <Compile Include="ViewModels\HeatLossCalcViewModel.cs" />
+    <Compile Include="Models\LevelWrap.cs" />
+    <Compile Include="ViewModels\Utils\RelayCommand.cs" />
+    <Compile Include="ViewModels\Utils\ViewModelBase.cs" />
+    <Compile Include="Views\MultiSelectTreeView.cs" />
+    <Compile Include="Views\HeatLossCalcView.xaml.cs">
+      <DependentUpon>HeatLossCalcView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Extensions\LoadViewExtensions.cs" />
+    <Compile Include="Views\PropertyGridFilePicker.xaml.cs">
+      <DependentUpon>PropertyGridFilePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PropertyGridFolderPicker.xaml.cs">
+      <DependentUpon>PropertyGridFolderPicker.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\HeatLossCalcView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PropertyGridFilePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PropertyGridFolderPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="HeatLossCalc.addin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
